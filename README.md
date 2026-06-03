@@ -238,8 +238,3 @@ The monitoring dashboard successfully provides:
 
 ---
 
-## Author
-
-Network Management Course Project
-
-Grafana Monitoring Dashboard using Prometheus and Docker on Ubuntu
