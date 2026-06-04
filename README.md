@@ -2,64 +2,112 @@
 
 ## Overview
 
-This project implements a basic monitoring and visualization system using Grafana and Prometheus on Ubuntu through Docker containers.
+This project implements a simple monitoring and visualization platform using Grafana, Prometheus, and Node Exporter on Ubuntu through Docker containers.
 
 The system collects real-time operating system metrics such as CPU usage and node status, stores them in Prometheus, and visualizes them through Grafana dashboards.
 
-This project was developed as part of a Network Management course assignment focusing on data visualization and monitoring infrastructure.
-
 ---
 
-## Objectives
+## Features
 
-* Deploy Grafana Monitoring Server
-* Collect system metrics using Node Exporter
-* Store metrics using Prometheus
-* Visualize monitoring data using Grafana
-* Implement required dashboard components:
-
-  * Gauge Panel
-  * Time Series Panel
-  * Stat Panel
-* Verify data consistency between Prometheus and Grafana
+* Real-time system monitoring
+* Prometheus metrics collection
+* Grafana dashboard visualization
+* Node status monitoring
+* CPU usage monitoring
+* Historical CPU trend analysis
+* Interactive time range selection
 
 ---
 
 ## System Architecture
 
-Node Exporter collects system metrics from the Ubuntu host.
-
-Prometheus periodically scrapes metrics from Node Exporter.
-
-Grafana retrieves data from Prometheus and displays it through dashboards.
-
 ```text
 Ubuntu Host
-     │
-     ▼
+      │
+      ▼
 Node Exporter
-     │
-     ▼
+      │
+      ▼
  Prometheus
-     │
-     ▼
+      │
+      ▼
   Grafana
-     │
-     ▼
+      │
+      ▼
  Dashboard
+```
+
+### Components
+
+| Component     | Purpose                   |
+| ------------- | ------------------------- |
+| Ubuntu        | Operating System          |
+| Docker        | Container Platform        |
+| Node Exporter | System Metrics Collection |
+| Prometheus    | Monitoring & Data Storage |
+| Grafana       | Data Visualization        |
+
+---
+
+## Dashboard Components
+
+### 1. Node Status (Stat)
+
+Displays node operational status.
+
+PromQL:
+
+```promql
+up
+```
+
+Example Output:
+
+```text
+UP
 ```
 
 ---
 
-## Technologies Used
+### 2. CPU Usage (Gauge)
 
-| Component     | Purpose                     |
-| ------------- | --------------------------- |
-| Ubuntu        | Operating System            |
-| Docker        | Container Platform          |
-| Node Exporter | System Metrics Collection   |
-| Prometheus    | Monitoring and Data Storage |
-| Grafana       | Data Visualization          |
+Displays current CPU utilization percentage.
+
+PromQL:
+
+```promql
+100 - (avg(rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)
+```
+
+---
+
+### 3. CPU Usage Over Time (Time Series)
+
+Displays CPU utilization trends over time.
+
+PromQL:
+
+```promql
+100 - (avg(rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)
+```
+
+---
+
+## Requirements
+
+Before running this project, ensure the following software is installed:
+
+* Ubuntu 24.04 LTS
+* Docker Engine
+* Docker Compose
+* Git
+
+Verify Docker installation:
+
+```bash
+docker --version
+```
 
 ---
 
@@ -80,9 +128,12 @@ grafana-project/
 ### Clone Repository
 
 ```bash
-git clone <repository-url>
-cd grafana-project
+git clone https://github.com/YOUR_USERNAME/grafana-monitoring-project.git
+
+cd grafana-monitoring-project
 ```
+
+---
 
 ### Start Services
 
@@ -90,13 +141,15 @@ cd grafana-project
 sudo docker-compose up -d
 ```
 
-### Verify Running Containers
+---
+
+### Verify Containers
 
 ```bash
 sudo docker ps
 ```
 
-Expected containers:
+Expected output should include:
 
 ```text
 grafana
@@ -131,110 +184,75 @@ http://localhost:9090
 
 ---
 
-## Dashboard Components
-
-### 1. Stat Panel
-
-Metric:
-
-```promql
-up
-```
-
-Purpose:
-
-Display node operational status.
-
-Output:
+### Node Exporter Metrics
 
 ```text
-UP
+http://localhost:9100/metrics
 ```
-
----
-
-### 2. Gauge Panel
-
-Metric:
-
-```promql
-100 - (avg(rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)
-```
-
-Purpose:
-
-Display current CPU utilization percentage.
-
----
-
-### 3. Time Series Panel
-
-Metric:
-
-```promql
-100 - (avg(rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)
-```
-
-Purpose:
-
-Display CPU utilization trends over time.
 
 ---
 
 ## Data Verification
 
-To verify dashboard accuracy, the same PromQL query is executed directly in Prometheus and compared against the values displayed in Grafana.
+To verify dashboard accuracy, execute the same PromQL query directly in Prometheus and compare it with the value displayed in Grafana.
 
 Example:
 
 Prometheus:
 
-```text
-20.93
-```
+<img width="838" height="386" alt="image" src="https://github.com/user-attachments/assets/627ec2b8-9eca-4d63-9893-52418dee4ed2" />
+
 
 Grafana:
 
-```text
-20.9%
-```
+<img width="765" height="459" alt="image" src="https://github.com/user-attachments/assets/13372652-61bb-4aa3-880e-4f8b142b507a" />
 
-The difference is only due to display rounding, confirming data consistency.
 
----
-
-## Testing and Validation
-
-The following requirements were successfully completed:
-
-* Grafana Server Deployment
-* Prometheus Data Source Integration
-* Gauge Visualization
-* Time Series Visualization
-* Stat Visualization
-* Data Verification
-* Time Range Interaction Testing
+The difference is only due to display rounding.
 
 ---
 
-## Results
+## Testing
 
-The monitoring dashboard successfully provides:
+The project successfully demonstrates:
 
-* Real-time CPU monitoring
-* Historical CPU trend analysis
-* Node operational status monitoring
-* Interactive dashboard visualization
+* Prometheus data collection
+* Grafana visualization
+* Node monitoring
+* Real-time dashboard updates
+* Time range interaction
+* Data consistency verification
 
 ---
 
 ## Future Improvements
 
-* Memory monitoring dashboard
+Potential future enhancements include:
+
+* RAM monitoring dashboard
 * Disk usage monitoring
-* Network bandwidth monitoring
-* Alerting system integration
+* Network traffic monitoring
+* Alert notifications
 * Multi-node monitoring
+* Email or Telegram alerts
 
 ---
+
+## Screenshots
+
+### Prometheus Target Status
+
+<img width="945" height="416" alt="image" src="https://github.com/user-attachments/assets/7dfbbe62-09d6-416b-a246-d07763a5ef8a" />
+
+
+### Grafana Data Source Connection
+
+<img width="945" height="170" alt="image" src="https://github.com/user-attachments/assets/b0ae2a42-9370-4390-9b8e-08da8fdb69ad" />
+
+
+### Monitoring Dashboard
+
+<img width="945" height="510" alt="image" src="https://github.com/user-attachments/assets/fad88cb2-27c0-461d-a0ea-92814e67d4e9" />
+
+
 
